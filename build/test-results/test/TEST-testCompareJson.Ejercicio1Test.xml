@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="testCompareJson.Ejercicio1Test" tests="5" skipped="0" failures="0" errors="0" timestamp="2021-03-02T06:21:16" hostname="LAPTOP-RDP1UL0U" time="0.064">
+  <properties/>
+  <testcase name="verify_compared_json_1" classname="testCompareJson.Ejercicio1Test" time="0.044"/>
+  <testcase name="verify_compared_json_2" classname="testCompareJson.Ejercicio1Test" time="0.004"/>
+  <testcase name="verify_compared_json_3" classname="testCompareJson.Ejercicio1Test" time="0.005"/>
+  <testcase name="verify_compared_json_4" classname="testCompareJson.Ejercicio1Test" time="0.004"/>
+  <testcase name="verify_compared_json_5" classname="testCompareJson.Ejercicio1Test" time="0.004"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
