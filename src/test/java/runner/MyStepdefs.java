@@ -6,12 +6,18 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import org.junit.Assert;
+import utilsJson.JsonHelper;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 public class MyStepdefs {
     Response response;
+    Map<String, String> data = new HashMap<>();
     String email;
     int password;
 
@@ -21,29 +27,80 @@ public class MyStepdefs {
         this.password = password;
     }
 
-    @When("I sent a request for creation of a new item at {string}")
-    public void iSentARequestForCreationOfANewItemAtHttpTodoLyApiItemsJson(String url, String item) {
-        response =  given().
-                    auth().
-                    preemptive().
-                    basic(email,""+password).
-                    contentType(ContentType.JSON).
-                    body(item).
-                    log().
-                    all().
-                    when().
-                    post(url);
-    }
-
     @Then("My status code must be {int} \\(Ok)")
     public void myStatusCodeMustBeOk(int statusCode) {
         response.then().statusCode(statusCode);
     }
 
-    @And("My item content must be {string}")
+    @And("My item content must be")
     public void myItemNameMustBe(String content) {
-        response.then().body("Content", equalTo(content));
+        Assert.assertTrue("No son iguales los objetos", JsonHelper.areEqualJson(replaceData(content),response.getBody().asString()));
     }
 
 
+    @When("I sent a POST request for creation of a new item at {}")
+    public void iSentAPOSTRequestForCreationOfANewItemAtHttpTodoLyApiItemsJson(String url, String item) {
+        response = given().
+                        auth().
+                        preemptive().
+                        basic(email,""+password).
+                        contentType(ContentType.JSON).
+                        body(item).
+                        log().
+                        all().
+                    when().
+                        post(url);
+    }
+
+    @And("I get the {} and I save it in {}")
+    public void iGetTheIdAndISaveIt(String property, String nameVar) {
+        data.put(nameVar,response.then().extract().path(property)+"");
+    }
+
+    @When("I sent a PUT request for update of a new item at {}")
+    public void iSentAPUTRequestForUpdateOfANewItemAtHttpTodoLyApiItemsID_ITEMJson(String url, String item) {
+        response =  given().
+                        auth().
+                        preemptive().
+                        basic(email,""+password).
+                        contentType(ContentType.JSON).
+                        body(item).
+                        log().
+                        all().
+                    when().
+                        put(replaceData(url));
+    }
+
+    @When("I sent a GET request for retrieve an item at {}")
+    public void iSentAGETRequestForRetrieveANewItemAtHttpTodoLyApiItemsID_ITEMJson(String url) {
+        response =  given().
+                        auth().
+                        preemptive().
+                        basic(email,""+password).
+                        contentType(ContentType.JSON).
+                        log().
+                        all().
+                    when().
+                        get(replaceData(url));
+    }
+
+    @When("I sent a DELETE request to remove an item at {}")
+    public void iSentADELETERequestToRemoveAnItemAtHttpTodoLyApiItemsID_ITEMJson(String url) {
+        response =  given().
+                        auth().
+                        preemptive().
+                        basic(email,""+password).
+                        contentType(ContentType.JSON).
+                        log().
+                        all().
+                    when().
+                        delete(replaceData(url));
+    }
+
+    private String replaceData(String value){
+        for (String key: data.keySet()) {
+            value=value.replace(key,data.get(key));
+        }
+        return value;
+    }
 }
